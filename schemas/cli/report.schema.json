@@ -1,0 +1,90 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "title": "Report",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "generated_at",
+    "sections"
+  ],
+  "properties": {
+    "generated_at": {
+      "type": "string",
+      "format": "date-time"
+    },
+    "sections": {
+      "$ref": "#/$defs/ReportSections"
+    }
+  },
+  "$defs": {
+    "ReportSections": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "top_findings",
+        "rollups",
+        "signal_leaderboard",
+        "grade_distribution",
+        "proposals",
+        "rejected_clusters"
+      ],
+      "properties": {
+        "top_findings": {
+          "type": "array",
+          "items": {
+            "type": "object"
+          }
+        },
+        "rollups": {
+          "type": "object",
+          "additionalProperties": {
+            "type": "array",
+            "items": {
+              "type": "object"
+            }
+          }
+        },
+        "signal_leaderboard": {
+          "type": "array",
+          "items": {
+            "type": "object"
+          }
+        },
+        "grade_distribution": {
+          "type": "object",
+          "additionalProperties": {
+            "type": "object",
+            "additionalProperties": {
+              "type": "integer",
+              "minimum": 0
+            }
+          }
+        },
+        "proposals": {
+          "type": "array",
+          "items": {
+            "$ref": "propose.schema.json#/$defs/Proposal"
+          }
+        },
+        "rejected_clusters": {
+          "type": "array",
+          "items": {
+            "$ref": "propose.schema.json#/$defs/RejectedCluster"
+          }
+        },
+        "pricing_coverage": {
+          "type": "array",
+          "items": {
+            "type": "object"
+          }
+        },
+        "unpriced_models": {
+          "type": "array",
+          "items": {
+            "type": "object"
+          }
+        }
+      }
+    }
+  }
+}

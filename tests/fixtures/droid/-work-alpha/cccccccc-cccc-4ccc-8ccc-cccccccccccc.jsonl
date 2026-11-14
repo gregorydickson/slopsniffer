@@ -1,0 +1,2 @@
+{"type": "session_start", "id": "cccccccc-cccc-4ccc-8ccc-cccccccccccc", "title": "fork", "owner": "tester", "version": 2, "cwd": "/work/alpha", "parent": "aaaaaaaa-aaaa-4aaa-8aaa-aaaaaaaaaaaa", "forkedAtMessageId": "m1"}
+{"type": "message", "id": "m11", "timestamp": "2026-11-09T11:00:11.000Z", "message": {"role": "user", "content": [{"type": "text", "text": "forked"}]}, "seq": 11}

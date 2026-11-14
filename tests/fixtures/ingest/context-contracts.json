@@ -1,0 +1,477 @@
+[
+  {
+    "name": "plain-reminder",
+    "record": {
+      "type": "user",
+      "message": {
+        "content": "<system-reminder>other text</system-reminder>"
+      }
+    },
+    "blocks": [
+      {
+        "kind": "other",
+        "source_path": null,
+        "content": "other text"
+      }
+    ],
+    "rows": [
+      {
+        "table": "messages",
+        "values": {
+          "event_id": "event-probe",
+          "role": "user",
+          "text": "<system-reminder>other text</system-reminder>"
+        }
+      }
+    ]
+  },
+  {
+    "name": "skill-listing",
+    "record": {
+      "type": "user",
+      "message": {
+        "content": "<system-reminder>The following skills are available for use with the Skill tool\n- demo</system-reminder>"
+      }
+    },
+    "blocks": [
+      {
+        "kind": "skill_listing",
+        "source_path": null,
+        "content": "The following skills are available for use with the Skill tool\n- demo"
+      }
+    ],
+    "rows": [
+      {
+        "table": "messages",
+        "values": {
+          "event_id": "event-probe",
+          "role": "user",
+          "text": "<system-reminder>The following skills are available for use with the Skill tool\n- demo</system-reminder>"
+        }
+      }
+    ]
+  },
+  {
+    "name": "hook",
+    "record": {
+      "type": "user",
+      "message": {
+        "content": "<system-reminder>UserPromptSubmit hook additional context: ready</system-reminder>"
+      }
+    },
+    "blocks": [
+      {
+        "kind": "hook_output",
+        "source_path": null,
+        "content": "UserPromptSubmit hook additional context: ready"
+      }
+    ],
+    "rows": [
+      {
+        "table": "messages",
+        "values": {
+          "event_id": "event-probe",
+          "role": "user",
+          "text": "<system-reminder>UserPromptSubmit hook additional context: ready</system-reminder>"
+        }
+      }
+    ]
+  },
+  {
+    "name": "not-hook",
+    "record": {
+      "type": "user",
+      "message": {
+        "content": "<system-reminder>quoted UserPromptSubmit hook context</system-reminder>"
+      }
+    },
+    "blocks": [
+      {
+        "kind": "other",
+        "source_path": null,
+        "content": "quoted UserPromptSubmit hook context"
+      }
+    ],
+    "rows": [
+      {
+        "table": "messages",
+        "values": {
+          "event_id": "event-probe",
+          "role": "user",
+          "text": "<system-reminder>quoted UserPromptSubmit hook context</system-reminder>"
+        }
+      }
+    ]
+  },
+  {
+    "name": "split-reminder",
+    "record": {
+      "type": "user",
+      "message": {
+        "content": "<system-reminder>preface\nContents of /repo/CLAUDE.md (project):\nThe following skills are available for use with the Skill tool\nContents of /repo/MEMORY.md (memory):\nbeta\n</system-reminder>"
+      }
+    },
+    "blocks": [
+      {
+        "kind": "other",
+        "source_path": null,
+        "content": "preface\n"
+      },
+      {
+        "kind": "claude_md",
+        "source_path": "/repo/CLAUDE.md",
+        "content": "Contents of /repo/CLAUDE.md (project):\nThe following skills are available for use with the Skill tool\n"
+      },
+      {
+        "kind": "memory_index",
+        "source_path": "/repo/MEMORY.md",
+        "content": "Contents of /repo/MEMORY.md (memory):\nbeta\n"
+      }
+    ],
+    "rows": [
+      {
+        "table": "messages",
+        "values": {
+          "event_id": "event-probe",
+          "role": "user",
+          "text": "<system-reminder>preface\nContents of /repo/CLAUDE.md (project):\nThe following skills are available for use with the Skill tool\nContents of /repo/MEMORY.md (memory):\nbeta\n</system-reminder>"
+        }
+      }
+    ]
+  },
+  {
+    "name": "request-blob",
+    "record": {
+      "type": "api-request-blob",
+      "message": {
+        "content": "<system-reminder>Contents of /repo/CLAUDE.md (project):\ncontent</system-reminder>"
+      }
+    },
+    "blocks": [
+      {
+        "kind": "claude_md",
+        "source_path": "/repo/CLAUDE.md",
+        "content": "Contents of /repo/CLAUDE.md (project):\ncontent"
+      }
+    ],
+    "rows": []
+  },
+  {
+    "name": "whitespace-prefix",
+    "record": {
+      "type": "api-request-blob",
+      "message": {
+        "content": "<system-reminder> \nContents of /repo/MEMORY.md (memory):\nbody</system-reminder>"
+      }
+    },
+    "blocks": [
+      {
+        "kind": "memory_index",
+        "source_path": "/repo/MEMORY.md",
+        "content": "Contents of /repo/MEMORY.md (memory):\nbody"
+      }
+    ],
+    "rows": []
+  },
+  {
+    "name": "instruction-attachment",
+    "record": {
+      "type": "attachment",
+      "attachment": {
+        "type": "instructions",
+        "files": [
+          {
+            "path": "/repo/CLAUDE.md",
+            "content": "alpha"
+          },
+          {
+            "path": "/repo/MEMORY.md",
+            "content": "beta"
+          },
+          {
+            "path": 3,
+            "content": "no path"
+          },
+          {
+            "path": "/bad",
+            "content": 3
+          },
+          "flat"
+        ]
+      }
+    },
+    "blocks": [
+      {
+        "kind": "claude_md",
+        "source_path": "/repo/CLAUDE.md",
+        "content": "alpha"
+      },
+      {
+        "kind": "memory_index",
+        "source_path": "/repo/MEMORY.md",
+        "content": "beta"
+      },
+      {
+        "kind": "claude_md",
+        "source_path": null,
+        "content": "no path"
+      }
+    ],
+    "rows": []
+  },
+  {
+    "name": "skill-attachment",
+    "record": {
+      "type": "attachment",
+      "attachment": {
+        "type": "skill_listing",
+        "content": "available"
+      }
+    },
+    "blocks": [
+      {
+        "kind": "skill_listing",
+        "source_path": null,
+        "content": "available"
+      }
+    ],
+    "rows": []
+  },
+  {
+    "name": "nested-memory",
+    "record": {
+      "type": "attachment",
+      "attachment": {
+        "type": "nested_memory",
+        "path": "/repo/MEMORY.md",
+        "content": {
+          "content": "remember"
+        }
+      }
+    },
+    "blocks": [
+      {
+        "kind": "memory_index",
+        "source_path": "/repo/MEMORY.md",
+        "content": "remember"
+      }
+    ],
+    "rows": []
+  },
+  {
+    "name": "nested-file",
+    "record": {
+      "type": "attachment",
+      "attachment": {
+        "type": "nested_memory",
+        "path": "/repo/CLAUDE.md",
+        "content": {
+          "content": "instructions"
+        }
+      }
+    },
+    "blocks": [
+      {
+        "kind": "claude_md",
+        "source_path": "/repo/CLAUDE.md",
+        "content": "instructions"
+      }
+    ],
+    "rows": []
+  },
+  {
+    "name": "hook-attachment",
+    "record": {
+      "type": "attachment",
+      "attachment": {
+        "type": "hook_failed",
+        "content": "a",
+        "stdout": "b",
+        "stderr": "c"
+      }
+    },
+    "blocks": [
+      {
+        "kind": "hook_output",
+        "source_path": null,
+        "content": "a\nb\nc"
+      }
+    ],
+    "rows": []
+  },
+  {
+    "name": "hook-empty-parts",
+    "record": {
+      "type": "attachment",
+      "attachment": {
+        "type": "hook_success",
+        "content": "",
+        "stdout": 7,
+        "stderr": "only"
+      }
+    },
+    "blocks": [
+      {
+        "kind": "hook_output",
+        "source_path": null,
+        "content": "only"
+      }
+    ],
+    "rows": []
+  },
+  {
+    "name": "negative-13",
+    "record": {
+      "type": "attachment",
+      "attachment": "flat"
+    },
+    "blocks": [],
+    "rows": []
+  },
+  {
+    "name": "negative-14",
+    "record": {
+      "type": "attachment",
+      "attachment": {}
+    },
+    "blocks": [],
+    "rows": []
+  },
+  {
+    "name": "negative-15",
+    "record": {
+      "type": "attachment",
+      "attachment": {
+        "type": 3,
+        "content": "ignored"
+      }
+    },
+    "blocks": [],
+    "rows": []
+  },
+  {
+    "name": "negative-16",
+    "record": {
+      "type": "attachment",
+      "attachment": {
+        "type": "date",
+        "content": "ignored"
+      }
+    },
+    "blocks": [],
+    "rows": []
+  },
+  {
+    "name": "negative-17",
+    "record": {
+      "type": "attachment",
+      "attachment": {
+        "type": "skill_listing",
+        "content": 3
+      }
+    },
+    "blocks": [],
+    "rows": []
+  },
+  {
+    "name": "negative-18",
+    "record": {
+      "type": "attachment",
+      "attachment": {
+        "type": "instructions",
+        "files": null
+      }
+    },
+    "blocks": [],
+    "rows": []
+  },
+  {
+    "name": "negative-19",
+    "record": {
+      "type": "attachment",
+      "attachment": {
+        "type": "nested_memory",
+        "content": "flat"
+      }
+    },
+    "blocks": [],
+    "rows": []
+  },
+  {
+    "name": "negative-20",
+    "record": {
+      "type": "attachment",
+      "attachment": {
+        "type": "nested_memory",
+        "content": {
+          "content": 3
+        }
+      }
+    },
+    "blocks": [],
+    "rows": []
+  },
+  {
+    "name": "negative-21",
+    "record": {
+      "type": "attachment",
+      "attachment": {
+        "type": "hook_success",
+        "content": "",
+        "stdout": null
+      }
+    },
+    "blocks": [],
+    "rows": []
+  },
+  {
+    "name": "negative-22",
+    "record": {
+      "type": "attachment",
+      "attachment": {
+        "type": "hook",
+        "content": "not-prefixed"
+      }
+    },
+    "blocks": [],
+    "rows": []
+  },
+  {
+    "name": "assistant-reminder-is-not-context",
+    "record": {
+      "type": "assistant",
+      "message": {
+        "content": "<system-reminder>ignore</system-reminder>"
+      }
+    },
+    "blocks": [],
+    "rows": [
+      {
+        "table": "messages",
+        "values": {
+          "event_id": "event-probe",
+          "role": "assistant",
+          "text": "<system-reminder>ignore</system-reminder>"
+        }
+      }
+    ]
+  },
+  {
+    "name": "surrogate-content",
+    "record": {
+      "type": "attachment",
+      "attachment": {
+        "type": "skill_listing",
+        "content": "lone \ud800"
+      }
+    },
+    "rows": [],
+    "blocks": [
+      {
+        "kind": "skill_listing",
+        "source_path": null,
+        "content": "lone \ud800"
+      }
+    ]
+  }
+]

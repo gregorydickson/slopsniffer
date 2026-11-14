@@ -1,0 +1,16 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="256" height="256" viewBox="0 0 256 256" role="img" aria-labelledby="title desc">
+  <title id="title">slopsniffer</title>
+  <desc id="desc">A pink pig snout sniffing three mint scent trails on a dark background.</desc>
+  <rect x="2" y="2" width="252" height="252" rx="54" fill="#15212f" stroke="#718096" stroke-width="4"/>
+  <g fill="none" stroke="#8cf0c5" stroke-width="7" stroke-linecap="round">
+    <path d="M64 45c-20 12 18 19 0 32"/>
+    <path d="M126 33c-20 12 18 19 0 32"/>
+    <path d="M190 45c-20 12 18 19 0 32"/>
+  </g>
+  <path d="M51 130 40 93q35-5 52 22M205 130l11-37q-35-5-52 22" fill="#f6b0c7" stroke="#ffdaea" stroke-width="5" stroke-linejoin="round"/>
+  <ellipse cx="128" cy="153" rx="89" ry="64" fill="#f6b0c7" stroke="#ffdaea" stroke-width="5"/>
+  <ellipse cx="96" cy="155" rx="15" ry="24" transform="rotate(-12 96 155)" fill="#66314d"/>
+  <ellipse cx="160" cy="155" rx="15" ry="24" transform="rotate(12 160 155)" fill="#66314d"/>
+  <path d="M110 198q18 9 36 0" fill="none" stroke="#a34d70" stroke-width="5" stroke-linecap="round"/>
+  <path d="m211 204 4 9 10 2-10 3-4 9-3-9-9-3 9-2Z" fill="#8cf0c5"/>
+</svg>

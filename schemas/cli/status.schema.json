@@ -1,0 +1,124 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "title": "Status",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "db_path",
+    "db_size_bytes",
+    "schema_version",
+    "harnesses",
+    "last_runs",
+    "pricing_coverage",
+    "unpriced_models"
+  ],
+  "properties": {
+    "db_path": {
+      "type": "string"
+    },
+    "db_size_bytes": {
+      "type": "integer",
+      "minimum": 0
+    },
+    "schema_version": {
+      "type": "integer"
+    },
+    "harnesses": {
+      "type": "object",
+      "propertyNames": {
+        "enum": [
+          "claude",
+          "codex",
+          "droid",
+          "pickle",
+          "skills",
+          "crush"
+        ]
+      },
+      "additionalProperties": {
+        "allOf": [
+          {
+            "$ref": "#/$defs/HarnessStatus"
+          },
+          {
+            "required": [
+              "files_by_status"
+            ]
+          }
+        ]
+      },
+      "properties": {
+        "skills": {
+          "allOf": [
+            {
+              "$ref": "#/$defs/HarnessStatus"
+            },
+            {
+              "not": {
+                "required": [
+                  "files_by_status"
+                ]
+              }
+            }
+          ]
+        }
+      }
+    },
+    "last_runs": {
+      "type": "object",
+      "additionalProperties": {
+        "type": [
+          "string",
+          "null"
+        ]
+      }
+    },
+    "pricing_coverage": {
+      "type": "array",
+      "items": {
+        "type": "object"
+      }
+    },
+    "unpriced_models": {
+      "type": "array",
+      "items": {
+        "type": "object"
+      }
+    }
+  },
+  "$defs": {
+    "HarnessStatus": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "unknown_record_types"
+      ],
+      "properties": {
+        "files_by_status": {
+          "type": "object",
+          "propertyNames": {
+            "enum": [
+              "new",
+              "resumable",
+              "complete",
+              "reingest",
+              "failed",
+              "missing"
+            ]
+          },
+          "additionalProperties": {
+            "type": "integer",
+            "minimum": 0
+          }
+        },
+        "unknown_record_types": {
+          "type": "object",
+          "additionalProperties": {
+            "type": "integer",
+            "minimum": 0
+          }
+        }
+      }
+    }
+  }
+}

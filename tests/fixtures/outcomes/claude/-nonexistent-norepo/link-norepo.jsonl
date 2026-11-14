@@ -1,0 +1,1 @@
+{"sessionId": "link-norepo", "uuid": "link-norepo-1", "cwd": "/nonexistent/outcomes-norepo", "gitBranch": "main", "timestamp": "2026-11-09T10:00:01.000Z", "type": "user", "message": {"role": "user", "content": [{"type": "text", "text": "hello"}]}}

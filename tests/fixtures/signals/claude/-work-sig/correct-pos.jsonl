@@ -1,0 +1,3 @@
+{"sessionId": "correct-pos", "uuid": "correct-pos-1", "cwd": "/work/sig", "timestamp": "2026-11-09T10:00:01.000Z", "type": "user", "message": {"role": "user", "content": [{"type": "text", "text": "fix the bug"}]}}
+{"sessionId": "correct-pos", "uuid": "correct-pos-2", "cwd": "/work/sig", "timestamp": "2026-11-09T10:00:02.000Z", "type": "assistant", "fx": "co-a1", "message": {"role": "assistant", "model": "claude-sonnet-4-5", "content": [{"type": "text", "text": "Fixed it."}]}}
+{"sessionId": "correct-pos", "uuid": "correct-pos-3", "cwd": "/work/sig", "timestamp": "2026-11-09T10:00:03.000Z", "type": "user", "fx": "co-u2", "message": {"role": "user", "content": [{"type": "text", "text": "That's wrong, try again."}]}}

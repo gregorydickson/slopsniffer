@@ -1,0 +1,4 @@
+{"sessionId": "orphan-neg", "uuid": "orphan-neg-1", "cwd": "/work/sig", "timestamp": "2026-11-09T10:00:01.000Z", "type": "user", "message": {"role": "user", "content": [{"type": "text", "text": "go"}]}}
+{"sessionId": "orphan-neg", "uuid": "orphan-neg-2", "cwd": "/work/sig", "timestamp": "2026-11-09T10:00:02.000Z", "type": "assistant", "message": {"role": "assistant", "model": "claude-sonnet-4-5", "content": [{"type": "tool_use", "id": "o1", "name": "Bash", "input": {"command": "ls"}}]}}
+{"sessionId": "orphan-neg", "uuid": "orphan-neg-3", "cwd": "/work/sig", "timestamp": "2026-11-09T10:00:03.000Z", "type": "user", "message": {"role": "user", "content": [{"type": "tool_result", "tool_use_id": "o1", "content": "ok"}]}}
+{"sessionId": "orphan-neg", "uuid": "orphan-neg-4", "cwd": "/work/sig", "timestamp": "2026-11-09T10:00:04.000Z", "type": "assistant", "message": {"role": "assistant", "model": "claude-sonnet-4-5", "content": [{"type": "text", "text": "done"}]}}

@@ -1,0 +1,13 @@
+{"type": "session_start", "id": "aaaaaaaa-aaaa-4aaa-8aaa-aaaaaaaaaaaa", "title": "root", "owner": "tester", "version": 2, "cwd": "/work/alpha", "hostId": "host-1"}
+{"type": "message", "id": "m1", "timestamp": "2026-11-09T11:00:01.000Z", "message": {"role": "user", "content": [{"type": "text", "text": "hello droid"}]}, "seq": 1}
+{"type": "message", "id": "m2", "timestamp": "2026-11-09T11:00:02.000Z", "message": {"role": "assistant", "content": [{"type": "text", "text": "looking"}, {"type": "tool_use", "id": "a-t1", "name": "Read", "input": {"file_path": "/work/alpha/x"}}], "modelId": "claude-sonnet-4-5", "apiProvider": "anthropic"}, "seq": 2}
+{"type": "message", "id": "m3", "timestamp": "2026-11-09T11:00:03.000Z", "message": {"role": "user", "content": [{"type": "tool_result", "tool_use_id": "a-t1", "content": "boom", "is_error": true}]}, "seq": 3}
+{"type": "message", "id": "m4", "timestamp": "2026-11-09T11:00:04.000Z", "message": {"role": "assistant", "content": [{"type": "thinking", "thinking": "", "signature": "sig"}, {"type": "tool_use", "id": "a-t2", "name": "Grep", "input": {"pattern": "x"}}], "modelId": "claude-sonnet-4-5", "apiProvider": "anthropic"}, "seq": 4}
+{"type": "message", "id": "m5", "timestamp": "2026-11-09T11:00:05.000Z", "message": {"role": "user", "content": [{"type": "tool_result", "tool_use_id": "a-t2", "content": [{"type": "text", "text": "match"}]}]}, "seq": 5}
+{"type": "message", "id": "m6", "timestamp": "2026-11-09T11:00:06.000Z", "message": {"role": "assistant", "content": [{"type": "tool_use", "id": "a-t3", "name": "Execute", "input": {"command": "ls"}}], "modelId": "claude-sonnet-4-5", "apiProvider": "anthropic"}, "seq": 6}
+{"type": "todo_state", "id": "todo-1", "timestamp": "2026-11-09T11:01:00.000Z", "todos": {}, "messageIndex": 1}
+{"type": "compaction_state", "id": "compact-1", "timestamp": "2026-11-09T11:02:00.000Z", "summaryText": "summary", "summaryTokens": 10, "removedCount": 2}
+{"type": "agent_turn_outcome", "turnId": "m1", "reason": "completed", "resultKind": "text"}
+{"type": "message", "id": "m7", "timestamp": "2026-11-09T11:00:07.000Z", "message": {"role": "assistant", "content": [{"type": "text", "text": "done"}], "modelId": "claude-sonnet-4-5", "apiProvider": "anthropic"}, "seq": 7}
+{"type": "session_end", "timestamp": "2026-11-09T11:03:00.000Z", "durationMs": 180000, "toolCount": 3}
+{"type": "zzz-fabricated", "timestamp": "2026-11-09T11:04:00.000Z"}

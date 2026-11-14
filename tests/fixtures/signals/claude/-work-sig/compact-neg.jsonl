@@ -1,0 +1,3 @@
+{"sessionId": "compact-neg", "uuid": "compact-neg-1", "cwd": "/work/sig", "timestamp": "2026-11-09T10:00:01.000Z", "type": "user", "message": {"role": "user", "content": [{"type": "text", "text": "hello"}]}}
+{"sessionId": "compact-neg", "uuid": "compact-neg-2", "cwd": "/work/sig", "timestamp": "2026-11-09T10:00:02.000Z", "type": "system", "subtype": "informational", "content": "note"}
+{"sessionId": "compact-neg", "uuid": "compact-neg-3", "cwd": "/work/sig", "timestamp": "2026-11-09T10:00:03.000Z", "type": "assistant", "message": {"role": "assistant", "model": "claude-sonnet-4-5", "content": [{"type": "text", "text": "hi"}]}}

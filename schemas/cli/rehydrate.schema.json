@@ -1,0 +1,14 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "title": "RehydrateResult",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["event_id", "source_path", "byte_offset", "byte_length", "raw_base64"],
+  "properties": {
+    "event_id": {"type": "string"},
+    "source_path": {"type": "string"},
+    "byte_offset": {"type": "integer", "minimum": 0},
+    "byte_length": {"type": "integer", "minimum": 0},
+    "raw_base64": {"type": "string", "contentEncoding": "base64"}
+  }
+}

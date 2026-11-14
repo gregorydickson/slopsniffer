@@ -1,0 +1,9 @@
+{
+  "model": "model-é",
+  "tokenUsage": {
+    "inputTokens": 23,
+    "outputTokens": 5,
+    "cacheReadTokens": 7,
+    "cacheCreationTokens": 2
+  }
+}

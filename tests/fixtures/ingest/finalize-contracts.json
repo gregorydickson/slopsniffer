@@ -1,0 +1,139 @@
+{
+  "claude": [
+    {
+      "type": "user",
+      "sessionId": "root",
+      "cwd": "/repo",
+      "message": {
+        "content": "hello"
+      }
+    },
+    {
+      "type": "assistant",
+      "sessionId": "root",
+      "message": {
+        "model": "model-\u00e9",
+        "content": [
+          {
+            "type": "tool_use",
+            "id": "call",
+            "name": "Read",
+            "input": {
+              "path": "x"
+            }
+          }
+        ],
+        "usage": {
+          "input_tokens": 23,
+          "output_tokens": 5,
+          "cache_read_input_tokens": 7,
+          "cache_creation_input_tokens": 2
+        }
+      }
+    },
+    {
+      "type": "user",
+      "sessionId": "root",
+      "message": {
+        "content": [
+          {
+            "type": "tool_result",
+            "tool_use_id": "call",
+            "content": "done",
+            "is_error": false
+          }
+        ]
+      }
+    },
+    {
+      "type": "cost-state",
+      "sessionId": "root",
+      "totalCostUSD": 0.75
+    }
+  ],
+  "codex": [
+    {
+      "type": "session_meta",
+      "payload": {
+        "id": "root",
+        "cwd": "/repo"
+      }
+    },
+    {
+      "type": "turn_context",
+      "payload": {
+        "model": "model-\u00e9"
+      }
+    },
+    {
+      "type": "response_item",
+      "payload": {
+        "type": "function_call",
+        "call_id": "call",
+        "name": "Read",
+        "arguments": "{\"path\":\"x\"}"
+      }
+    },
+    {
+      "type": "response_item",
+      "payload": {
+        "type": "function_call_output",
+        "call_id": "call",
+        "output": "done"
+      }
+    },
+    {
+      "type": "event_msg",
+      "payload": {
+        "type": "token_count",
+        "info": {
+          "last_token_usage": {
+            "input_tokens": 30,
+            "output_tokens": 5,
+            "cached_input_tokens": 7,
+            "cache_write_input_tokens": 2
+          },
+          "total_token_usage": {
+            "input_tokens": 30
+          }
+        }
+      }
+    }
+  ],
+  "droid": [
+    {
+      "type": "session_start",
+      "cwd": "/repo"
+    },
+    {
+      "type": "message",
+      "message": {
+        "role": "assistant",
+        "modelId": "model-\u00e9",
+        "content": [
+          {
+            "type": "tool_use",
+            "id": "call",
+            "name": "Read",
+            "input": {
+              "path": "x"
+            }
+          }
+        ]
+      }
+    },
+    {
+      "type": "message",
+      "message": {
+        "role": "user",
+        "content": [
+          {
+            "type": "tool_result",
+            "tool_use_id": "call",
+            "content": "done"
+          }
+        ]
+      }
+    }
+  ]
+}

@@ -1,0 +1,108 @@
+[
+  [
+    "empty",
+    "",
+    {}
+  ],
+  [
+    "not-leading",
+    "body\n---\nname: ignored\n---",
+    {}
+  ],
+  [
+    "unterminated",
+    "---\nname: ignored",
+    {}
+  ],
+  [
+    "blank-block",
+    "---\n---",
+    {}
+  ],
+  [
+    "fields",
+    " --- \nname: demo\n description: nested\n#comment: ignored\n: empty key\nno separator\nspaced : value \n---\nname: outside",
+    {
+      "name": "demo",
+      "spaced": "value"
+    }
+  ],
+  [
+    "quoted",
+    "---\na: 'single'\nb: \"double\"\nc: \"mismatch'\nd: x\ne: ''\nf: \"\"\n---",
+    {
+      "a": "single",
+      "b": "double",
+      "c": "\"mismatch'",
+      "d": "x",
+      "e": "",
+      "f": ""
+    }
+  ],
+  [
+    "fold",
+    "---\ndescription: >-\n  first\n\n  second\nname: after\n---",
+    {
+      "description": "first second",
+      "name": "after"
+    }
+  ],
+  [
+    "fold-plain",
+    "---\ndescription: >\n  first\n  second\n---",
+    {
+      "description": "first second"
+    }
+  ],
+  [
+    "literal",
+    "---\ndescription: |-\n  first\n\n  second\n---",
+    {
+      "description": "first\nsecond"
+    }
+  ],
+  [
+    "literal-plain",
+    "---\ndescription: |\n  first\n  second\n---",
+    {
+      "description": "first\nsecond"
+    }
+  ],
+  [
+    "one-char-quote",
+    "---\na: '\nb: \"\nc: x'\n---",
+    {
+      "a": "'",
+      "b": "\"",
+      "c": "x'"
+    }
+  ],
+  [
+    "no-block",
+    "---\na: >\nb: plain\n---",
+    {
+      "a": "",
+      "b": "plain"
+    }
+  ],
+  [
+    "empty-block-before-body-delimiters",
+    "---\n---\nname: outside\n---",
+    {}
+  ],
+  [
+    "colons-in-values",
+    "---\ndescription: URL: https://example.test:443/x\nunquoted: XhelloX\n---",
+    {
+      "description": "URL: https://example.test:443/x",
+      "unquoted": "XhelloX"
+    }
+  ],
+  [
+    "single-space-block-indent",
+    "---\ndescription: >\n first\n second\n---",
+    {
+      "description": "first second"
+    }
+  ]
+]

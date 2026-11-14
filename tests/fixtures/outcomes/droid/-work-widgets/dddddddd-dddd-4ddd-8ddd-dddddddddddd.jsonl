@@ -1,0 +1,3 @@
+{"type": "session_start", "id": "dddddddd-dddd-4ddd-8ddd-dddddddddddd", "title": "fix", "owner": "tester", "version": 2, "cwd": "__REPO__"}
+{"type": "message", "id": "d1", "timestamp": "2026-11-09T13:00:01.000Z", "message": {"role": "assistant", "content": [{"type": "tool_use", "id": "dt1", "name": "Execute", "input": {"command": "git commit -am fix"}}]}}
+{"type": "message", "id": "d2", "timestamp": "2026-11-09T13:00:02.000Z", "message": {"role": "user", "content": [{"type": "tool_result", "tool_use_id": "dt1", "content": "[main (root-commit) abcdef0] fix"}]}, "fx": "droid-commit"}

@@ -1,0 +1,33 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "title": "ProposeSummary",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["proposals", "rejected"],
+  "properties": {
+    "proposals": {"type": "array", "items": {"$ref": "#/$defs/Proposal"}},
+    "rejected": {"type": "array", "items": {"$ref": "#/$defs/RejectedCluster"}}
+  },
+  "$defs": {
+    "Proposal": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["skill", "path", "diff_path", "evidence_sessions"],
+      "properties": {
+        "skill": {"type": "string"},
+        "path": {"type": "string"},
+        "diff_path": {"type": "string"},
+        "evidence_sessions": {"type": "array", "items": {"type": "string"}, "minItems": 1}
+      }
+    },
+    "RejectedCluster": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["cluster_key", "reason"],
+      "properties": {
+        "cluster_key": {"type": "string"},
+        "reason": {"type": "string"}
+      }
+    }
+  }
+}

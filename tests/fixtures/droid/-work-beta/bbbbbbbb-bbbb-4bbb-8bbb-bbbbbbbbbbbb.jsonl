@@ -1,0 +1,4 @@
+{"type": "session_start", "id": "bbbbbbbb-bbbb-4bbb-8bbb-bbbbbbbbbbbb", "title": "child", "owner": "tester", "version": 2, "cwd": "/work/beta", "callingSessionId": "aaaaaaaa-aaaa-4aaa-8aaa-aaaaaaaaaaaa", "callingToolUseId": "a-t9"}
+{"type": "message", "id": "m8", "timestamp": "2026-11-09T11:00:08.000Z", "message": {"role": "user", "content": [{"type": "text", "text": "child task"}]}, "seq": 8}
+{"type": "message", "id": "m9", "timestamp": "2026-11-09T11:00:09.000Z", "message": {"role": "assistant", "content": [{"type": "tool_use", "id": "b-t1", "name": "LS", "input": {"path": "/work/beta"}}], "modelId": "unpriced-model"}, "seq": 9}
+{"type": "message", "id": "m10", "timestamp": "2026-11-09T11:00:10.000Z", "message": {"role": "user", "content": [{"type": "tool_result", "tool_use_id": "b-t1", "content": "a b"}]}, "seq": 10}

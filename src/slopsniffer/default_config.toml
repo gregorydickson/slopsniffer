@@ -1,0 +1,221 @@
+# Packaged defaults. A user config (--config, $SLOPSNIFFER_CONFIG or
+# ~/.config/slopsniffer/config.toml) is merged over this file; it may only
+# set keys that exist here (pricing.models accepts new model entries), and each
+# value must have the type of its default.
+
+[ingest]
+workers = 4
+# DuckDB buffer-pool cap, not the process total: the writer's RSS plateaus well above it
+# (allocator memory DuckDB does not count, plus parsers). Finalization is per session, so
+# the plateau tracks this limit rather than the corpus size; keep it a fraction of the RSS
+# the ingest may use.
+memory_limit = "512MB"
+threads = 2
+batch_rows = 5000
+
+[ingest.sources]
+crush_projects = "~/.local/share/crush/projects.json"
+claude_projects = "~/.claude/projects"
+codex_sessions = "~/.codex/sessions"
+droid_sessions = "~/.factory/sessions"
+pickle_sessions = ["~/.local/share/pickle-rick/sessions", "~/.claude/pickle-rick/sessions"]
+skill_roots = ["~/.claude/skills", "~/.agents/skills", "~/.codex/skills"]
+plugin_roots = ["~/.claude/plugins"]
+
+[signals]
+rerun_min = 3
+churn_min = 5
+abandon_window = 5
+orphan_hours = 24
+# Case-insensitive phrases that mark a user message as correcting the previous assistant turn.
+correction_lexicon = [
+    "that's wrong",
+    "that is wrong",
+    "that's not what",
+    "not what i asked",
+    "you didn't",
+    "you missed",
+    "i said",
+    "try again",
+    "undo that",
+    "revert that",
+    "why did you",
+]
+
+# Standard short-context list estimates, verified 2026-11-12. See docs/pricing.md.
+# Exact model entries win; only trailing -YYYYMMDD / -YYYY-MM-DD is stripped.
+# Unknown ids remain unpriced. Cache writes use short-lived cache rates.
+
+[pricing.models."gpt-5"]
+input_usd_per_mtok = 1.25
+cache_read_usd_per_mtok = 0.125
+cache_write_usd_per_mtok = 0.0
+output_usd_per_mtok = 10.0
+
+[pricing.models."gpt-5-codex"]
+input_usd_per_mtok = 1.25
+cache_read_usd_per_mtok = 0.125
+cache_write_usd_per_mtok = 0.0
+output_usd_per_mtok = 10.0
+
+[pricing.models."gpt-5.4"]
+input_usd_per_mtok = 2.5
+cache_read_usd_per_mtok = 0.25
+cache_write_usd_per_mtok = 0.0
+output_usd_per_mtok = 15.0
+
+[pricing.models."gpt-5.6-sol"]
+input_usd_per_mtok = 4.0
+cache_read_usd_per_mtok = 0.4
+cache_write_usd_per_mtok = 5.0
+output_usd_per_mtok = 20.0
+
+[pricing.models."gpt-5.6-terra"]
+input_usd_per_mtok = 2.0
+cache_read_usd_per_mtok = 0.2
+cache_write_usd_per_mtok = 2.5
+output_usd_per_mtok = 12.0
+
+[pricing.models."gpt-5.6-luna"]
+input_usd_per_mtok = 0.2
+cache_read_usd_per_mtok = 0.02
+cache_write_usd_per_mtok = 0.25
+output_usd_per_mtok = 1.2
+
+[pricing.models."gpt-6-astra"]
+input_usd_per_mtok = 10.0
+cache_read_usd_per_mtok = 1.0
+cache_write_usd_per_mtok = 12.5
+output_usd_per_mtok = 50.0
+
+[pricing.models."gpt-6.1-sol"]
+input_usd_per_mtok = 2.0
+cache_read_usd_per_mtok = 0.1
+cache_write_usd_per_mtok = 2.5
+output_usd_per_mtok = 10.0
+
+[pricing.models."claude-sonnet-4-5"]
+input_usd_per_mtok = 3.0
+cache_read_usd_per_mtok = 0.3
+cache_write_usd_per_mtok = 3.75
+output_usd_per_mtok = 15.0
+
+[pricing.models."claude-opus-5-5"]
+input_usd_per_mtok = 4.0
+cache_read_usd_per_mtok = 0.2
+cache_write_usd_per_mtok = 5.0
+output_usd_per_mtok = 20.0
+
+[pricing.models."claude-opus-5"]
+input_usd_per_mtok = 5.0
+cache_read_usd_per_mtok = 0.5
+cache_write_usd_per_mtok = 6.25
+output_usd_per_mtok = 25.0
+
+[pricing.models."claude-opus-4-8"]
+input_usd_per_mtok = 5.0
+cache_read_usd_per_mtok = 0.5
+cache_write_usd_per_mtok = 6.25
+output_usd_per_mtok = 25.0
+
+[pricing.models."claude-opus-4-7"]
+input_usd_per_mtok = 5.0
+cache_read_usd_per_mtok = 0.5
+cache_write_usd_per_mtok = 6.25
+output_usd_per_mtok = 25.0
+
+[pricing.models."claude-opus-4-6"]
+input_usd_per_mtok = 5.0
+cache_read_usd_per_mtok = 0.5
+cache_write_usd_per_mtok = 6.25
+output_usd_per_mtok = 25.0
+
+[pricing.models."claude-sonnet-5"]
+input_usd_per_mtok = 2.0
+cache_read_usd_per_mtok = 0.2
+cache_write_usd_per_mtok = 2.5
+output_usd_per_mtok = 10.0
+
+[pricing.models."claude-sonnet-5-5"]
+input_usd_per_mtok = 2.0
+cache_read_usd_per_mtok = 0.1
+cache_write_usd_per_mtok = 2.5
+output_usd_per_mtok = 10.0
+
+[pricing.models."claude-haiku-4-5"]
+input_usd_per_mtok = 1.0
+cache_read_usd_per_mtok = 0.1
+cache_write_usd_per_mtok = 1.25
+output_usd_per_mtok = 5.0
+
+[pricing.models."claude-haiku-5-5"]
+input_usd_per_mtok = 0.1
+cache_read_usd_per_mtok = 0.01
+cache_write_usd_per_mtok = 0.125
+output_usd_per_mtok = 0.5
+
+[pricing.models."claude-fable-5"]
+input_usd_per_mtok = 10.0
+cache_read_usd_per_mtok = 1.0
+cache_write_usd_per_mtok = 12.5
+output_usd_per_mtok = 50.0
+
+[pricing.models."gpt-5.5"]
+input_usd_per_mtok = 5.0
+cache_read_usd_per_mtok = 0.5
+cache_write_usd_per_mtok = 0.0
+output_usd_per_mtok = 30.0
+
+[pricing.models."gpt-5.4-mini"]
+input_usd_per_mtok = 0.75
+cache_read_usd_per_mtok = 0.075
+cache_write_usd_per_mtok = 0.0
+output_usd_per_mtok = 4.5
+
+[pricing.models."gpt-5.3-codex"]
+input_usd_per_mtok = 1.75
+cache_read_usd_per_mtok = 0.175
+cache_write_usd_per_mtok = 0.0
+output_usd_per_mtok = 14.0
+
+
+# Z.AI does not publish a cache-creation token rate here. Nonzero writes stay unpriced.
+[pricing.models."glm-5.2"]
+input_usd_per_mtok = 1.4
+cache_read_usd_per_mtok = 0.26
+cache_write_usd_per_mtok = 0.0
+output_usd_per_mtok = 4.4
+
+[pricing.models."glm-5.3"]
+input_usd_per_mtok = 1.4
+cache_read_usd_per_mtok = 0.26
+cache_write_usd_per_mtok = 0.0
+output_usd_per_mtok = 4.4
+
+# Alibaba Global scope, explicit cache; use an override for another scope/cache mode.
+[pricing.models."qwen3.8-max"]
+input_usd_per_mtok = 1.65
+cache_read_usd_per_mtok = 0.137
+cache_write_usd_per_mtok = 2.063
+output_usd_per_mtok = 4.951
+
+[outcomes]
+rate_reserve = 1000
+open_pr_ttl_hours = 6
+pr_batch_size = 50
+# RE2 pattern for issue-tracker keys (e.g. "PROJ-\\d+"), matched case-insensitively at word
+# boundaries in branch names and in what the user and agent said; matches are stored
+# upper-cased. Empty turns ticket linking off. $SLOPSNIFFER_TICKET_PATTERN overrides it.
+ticket_pattern = ""
+
+[grading]
+backend = "auto"
+chunk_tokens = 24000
+chunk_overlap = 2000
+
+[grading.badness_weights]
+signal_severity = 1.0
+ci_red_at_head = 5.0
+changes_requested = 3.0
+reverted = 8.0
+closed_unmerged = 2.0

@@ -1,0 +1,14 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "title": "CliError",
+  "description": "Emitted on stdout under --json when a subcommand exits non-zero without its own document.",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["error", "message", "command"],
+  "properties": {
+    "error": {"type": "string"},
+    "message": {"type": "string"},
+    "command": {"type": ["string", "null"]},
+    "holder_pid": {"type": ["integer", "null"]}
+  }
+}

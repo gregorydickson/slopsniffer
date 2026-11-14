@@ -1,0 +1,14 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "title": "GradeSummary",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["selected_session_ids", "calls", "calls_by_backend", "chunks_errored", "sessions_graded"],
+  "properties": {
+    "selected_session_ids": {"type": "array", "items": {"type": "string"}},
+    "calls": {"type": "integer", "minimum": 0},
+    "calls_by_backend": {"type": "object", "additionalProperties": {"type": "integer", "minimum": 0}},
+    "chunks_errored": {"type": "integer", "minimum": 0},
+    "sessions_graded": {"type": "integer", "minimum": 0}
+  }
+}

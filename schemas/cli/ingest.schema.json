@@ -1,0 +1,34 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "title": "IngestSummary",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["started_at", "finished_at", "harnesses"],
+  "properties": {
+    "started_at": {"type": "string", "format": "date-time"},
+    "finished_at": {"type": "string", "format": "date-time"},
+    "harnesses": {
+      "type": "object",
+      "propertyNames": {"enum": ["claude", "codex", "droid", "pickle", "skills", "crush"]},
+      "additionalProperties": {"$ref": "#/$defs/HarnessIngest"}
+    }
+  },
+  "$defs": {
+    "HarnessIngest": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["files_seen", "files_skipped_unchanged", "files_resumed", "files_reingested",
+                   "files_new", "files_failed", "events_written", "ingest_errors"],
+      "properties": {
+        "files_seen": {"type": "integer", "minimum": 0},
+        "files_skipped_unchanged": {"type": "integer", "minimum": 0},
+        "files_resumed": {"type": "integer", "minimum": 0},
+        "files_reingested": {"type": "integer", "minimum": 0},
+        "files_new": {"type": "integer", "minimum": 0},
+        "files_failed": {"type": "array", "items": {"type": "string"}},
+        "events_written": {"type": "integer", "minimum": 0},
+        "ingest_errors": {"type": "integer", "minimum": 0}
+      }
+    }
+  }
+}

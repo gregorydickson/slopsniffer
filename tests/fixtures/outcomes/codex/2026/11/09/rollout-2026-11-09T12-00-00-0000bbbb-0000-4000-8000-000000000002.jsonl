@@ -1,0 +1,4 @@
+{"timestamp": "2026-11-09T12:00:01.000Z", "type": "session_meta", "payload": {"id": "0000bbbb-0000-4000-8000-000000000002", "cwd": "/nonexistent/codex", "git": {"branch": "feature/x"}}}
+{"timestamp": "2026-11-09T12:00:02.000Z", "type": "turn_context", "payload": {"model": "gpt-5", "cwd": "/nonexistent/codex"}}
+{"timestamp": "2026-11-09T12:00:03.000Z", "type": "response_item", "payload": {"type": "function_call", "name": "exec_command", "arguments": "{\"cmd\": \"gh pr create --title gadgets\"}", "call_id": "k1"}}
+{"timestamp": "2026-11-09T12:00:04.000Z", "type": "response_item", "payload": {"type": "function_call_output", "call_id": "k1", "output": "https://github.com/acme/gadgets/pull/5"}, "fx": "cx-res"}

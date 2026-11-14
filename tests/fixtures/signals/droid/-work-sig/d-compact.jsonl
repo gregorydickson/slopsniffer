@@ -1,0 +1,4 @@
+{"type": "session_start", "id": "d-compact", "title": "t", "cwd": "/work/sig", "timestamp": "2026-11-09T12:00:00.000Z"}
+{"type": "message", "id": "dm1", "timestamp": "2026-11-09T12:00:01.000Z", "message": {"role": "user", "content": [{"type": "text", "text": "hello"}]}}
+{"type": "compaction_state", "id": "dc1", "timestamp": "2026-11-09T12:00:02.000Z", "summaryText": "s", "summaryTokens": 1, "fx": "dr-c1"}
+{"type": "message", "id": "dm2", "timestamp": "2026-11-09T12:00:03.000Z", "message": {"role": "assistant", "content": [{"type": "text", "text": "hi"}]}}

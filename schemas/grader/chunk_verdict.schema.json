@@ -1,0 +1,15 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "title": "ChunkVerdict",
+  "description": "Per-chunk grader output; also passed to the grading backend as its output schema.",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["rubric", "label", "score", "reason", "cited_event_ids"],
+  "properties": {
+    "rubric": {"enum": ["efficiency", "code-quality", "procedure-compliance", "verbosity"]},
+    "label": {"type": "string"},
+    "score": {"type": "number", "minimum": 0, "maximum": 1},
+    "reason": {"type": "string"},
+    "cited_event_ids": {"type": "array", "items": {"type": "string"}}
+  }
+}

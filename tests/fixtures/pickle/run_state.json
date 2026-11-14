@@ -1,0 +1,9 @@
+{
+  "active": false,
+  "step": "completed",
+  "iteration": 2,
+  "max_iterations": 50,
+  "current_ticket": null,
+  "start_time_epoch": 1794200000,
+  "working_dir": "/work/beta"
+}

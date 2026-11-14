@@ -1,0 +1,14 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "title": "OutcomesSummary",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["links_written", "prs_fetched", "prs_cached", "rate_limited", "rate_remaining"],
+  "properties": {
+    "links_written": {"type": "integer", "minimum": 0},
+    "prs_fetched": {"type": "integer", "minimum": 0},
+    "prs_cached": {"type": "integer", "minimum": 0},
+    "rate_limited": {"type": "boolean"},
+    "rate_remaining": {"type": ["integer", "null"]}
+  }
+}

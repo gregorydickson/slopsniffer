@@ -1,0 +1,9 @@
+{
+  "model": "unpriced-model",
+  "tokenUsage": {
+    "inputTokens": 10,
+    "outputTokens": 5,
+    "cacheCreationTokens": 0,
+    "cacheReadTokens": 0
+  }
+}

@@ -1,0 +1,30 @@
+[project]
+name = "slopsniffer"
+version = "0.1.0"
+description = "Local, lossless digest of agent transcripts into DuckDB with waste signals, outcomes, grading and proposals."
+readme = "README.md"
+authors = [
+    { name = "Gregory Dickson" }
+]
+requires-python = ">=3.14"
+dependencies = [
+    "duckdb>=2.0.0",
+    "jsonschema>=4.26.0",
+]
+
+[project.scripts]
+slopsniffer = "slopsniffer:main"
+
+[build-system]
+requires = ["uv_build>=0.10.9,<0.11.0"]
+build-backend = "uv_build"
+
+[dependency-groups]
+dev = [
+    "mutmut>=3.8.1",
+    "mypy>=2.4.1",
+    "pytest>=9.2.0",
+    "referencing>=0.37.0",
+    "ruff>=0.17.4",
+    "types-jsonschema>=4.26.0.20261006",
+]

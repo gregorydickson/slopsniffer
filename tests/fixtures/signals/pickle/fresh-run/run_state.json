@@ -1,0 +1,9 @@
+{
+  "active": true,
+  "step": "implement",
+  "iteration": 1,
+  "max_iterations": 9,
+  "current_ticket": "t1",
+  "start_time_epoch": 1793000000,
+  "working_dir": "/work/sig"
+}

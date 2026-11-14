@@ -1,0 +1,13 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "title": "RunSummary",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["ingest", "signals", "outcomes"],
+  "properties": {
+    "ingest": {"$ref": "ingest.schema.json"},
+    "signals": {"$ref": "signals.schema.json#/$defs/SignalsRunSummary"},
+    "outcomes": {"$ref": "outcomes.schema.json"},
+    "grade": {"$ref": "grade.schema.json"}
+  }
+}

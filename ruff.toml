@@ -1,0 +1,6 @@
+line-length = 100
+target-version = "py314"
+extend-exclude = ["mutants", "tests/fixtures/ingest/nonutf8-skill.md"]
+
+[lint]
+select = ["E", "F", "W", "I", "UP", "B", "SIM", "RUF"]

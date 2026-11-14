@@ -1,0 +1,47 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "title": "SignalsReport",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["window", "signals", "rollups"],
+  "properties": {
+    "window": {
+      "type": "object",
+      "additionalProperties": {"type": ["string", "null"]},
+      "required": ["since", "until"]
+    },
+    "signals": {"type": "array", "items": {"$ref": "#/$defs/Signal"}},
+    "rollups": {
+      "type": "object",
+      "propertyNames": {"enum": ["lane", "skill", "project", "day", "week"]},
+      "additionalProperties": {"type": "array", "items": {"type": "object"}}
+    }
+  },
+  "$defs": {
+    "Signal": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["signal_id", "kind", "session_id", "harness", "project", "severity",
+                   "evidence_event_ids", "details"],
+      "properties": {
+        "signal_id": {"type": "string"},
+        "kind": {"type": "string"},
+        "session_id": {"type": "string"},
+        "harness": {"enum": ["claude", "codex", "droid", "pickle", "skills", "crush"]},
+        "project": {"type": ["string", "null"]},
+        "severity": {"type": "number"},
+        "evidence_event_ids": {"type": "array", "items": {"type": "string"}},
+        "details": {"type": "object"}
+      }
+    },
+    "SignalsRunSummary": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["signals_written", "by_kind"],
+      "properties": {
+        "signals_written": {"type": "integer", "minimum": 0},
+        "by_kind": {"type": "object", "additionalProperties": {"type": "integer", "minimum": 0}}
+      }
+    }
+  }
+}
