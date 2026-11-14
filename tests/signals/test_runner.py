@@ -117,6 +117,9 @@ def test_report_uses_utc_midnight_and_preserves_null_details_and_rollup_values()
                 {
                     "key": key,
                     "sessions": len(included),
+                    "top_level_sessions": len(included),
+                    "sessions_including_subagents": len(included),
+                    "worktree_count": 1,
                     "total_tokens": sum(usage_tokens),
                     "mean_tokens": sum(usage_tokens) / len(included),
                     "total_cost_usd": 0.0,

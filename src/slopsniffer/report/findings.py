@@ -1,5 +1,6 @@
 """Human explanations and session navigation from bounded top finding evidence."""
 
+import hashlib
 import re
 import shlex
 from pathlib import Path
@@ -188,3 +189,157 @@ def _shell_path(path: str) -> str:
     except ValueError:
         return shlex.quote(path)
     return '"$HOME"/' + shlex.quote(str(relative))
+
+
+def subject(kind: str, details: dict[str, object]) -> str:
+    """Group by the affected operation, with pure literal waits sharing one shape."""
+    from slopsniffer.signals.runner import NOOP_COMMAND
+
+    value = kind
+    if kind == "rerun_loop":
+        value = str(details.get("command", ""))
+        if re.fullmatch(NOOP_COMMAND, value):
+            value = "idle no-op polling"
+    elif kind == "user_correction":
+        value = "user correction"
+    else:
+        for key in ("path", "skill", "command", "tool", "reason"):
+            if details.get(key):
+                value = str(details[key])
+                break
+    # Bound the scalar spool while preserving the whole subject's identity.
+    return (
+        value
+        if len(value) <= 256
+        else value[:160] + "… " + hashlib.sha256(value.encode()).hexdigest()
+    )
+
+
+def grouped(con: duckdb.DuckDBPyConnection, limit: int) -> list[dict[str, object]]:
+    """Spool scalar subjects; fetch evidence only for five worst sessions per top group.
+
+    Ranking takes the best group per kind first, then the second best, and so on.
+    Within each round groups sort by maximum severity, then kind/subject. Zero
+    severity observations stay in the leaderboard, never the actionable top list.
+    """
+    import json
+
+    from slopsniffer.ingest.reader import BATCH_ROWS
+
+    con.execute(
+        "CREATE OR REPLACE TEMP TABLE finding_subjects "
+        "(signal_id VARCHAR, kind VARCHAR, session_id VARCHAR, severity DOUBLE, "
+        "subject VARCHAR, calls BIGINT)"
+    )
+    try:
+        last = -1
+        while page := con.execute(
+            "SELECT rowid, signal_id, kind, session_id, severity FROM signals "
+            "WHERE rowid > ? AND severity > 0 AND session_id IN ("
+            "SELECT session_id FROM sessions UNION ALL SELECT pickle_run_id FROM pickle_runs "
+            "UNION ALL SELECT path FROM skills) ORDER BY rowid LIMIT ?",
+            [last, BATCH_ROWS],
+        ).fetchall():
+            values = []
+            for position, identity, kind, sid, severity in page:
+                (raw,) = con.execute(
+                    "SELECT details::VARCHAR FROM signals WHERE rowid=?", [position]
+                ).fetchone() or ("{}",)
+                details = json.loads(raw or "{}")
+                values.append(
+                    (
+                        identity,
+                        kind,
+                        sid,
+                        severity,
+                        subject(kind, details),
+                        int(details.get("runs", 1)),
+                    )
+                )
+            con.executemany("INSERT INTO finding_subjects VALUES (?, ?, ?, ?, ?, ?)", values)
+            last = page[-1][0]
+        groups = con.execute(
+            """
+WITH totals AS (
+    SELECT kind, subject, max(severity) AS severity, count(*) AS findings,
+           sum(calls) AS calls, count(DISTINCT session_id) AS sessions
+    FROM finding_subjects GROUP BY kind, subject
+), ranked AS (
+    SELECT *, row_number() OVER (PARTITION BY kind ORDER BY severity DESC, subject) AS round
+    FROM totals
+)
+SELECT kind, subject, severity, findings, calls, sessions FROM ranked
+ORDER BY round, severity DESC, kind, subject LIMIT ?
+""",
+            [limit],
+        ).fetchall()
+        result = []
+        for kind, shape, severity, count, calls, sessions in groups:
+            # Deduplicate sessions before summing: session costs are context, not waste.
+            context = con.execute(
+                """
+SELECT sum(c.cost_usd), count(*) FILTER (WHERE c.cost_usd IS NULL OR c.method IN
+    ('unpriced','partial_price_table'))
+FROM (SELECT DISTINCT session_id FROM finding_subjects WHERE kind=? AND subject=?) s
+LEFT JOIN session_cost c USING(session_id)
+""",
+                [kind, shape],
+            ).fetchone()
+            worst = con.execute(
+                """
+SELECT signal_id FROM finding_subjects WHERE kind=? AND subject=?
+QUALIFY row_number() OVER (PARTITION BY session_id ORDER BY severity DESC, signal_id)=1
+ORDER BY severity DESC, signal_id LIMIT 5
+""",
+                [kind, shape],
+            ).fetchall()
+            members = []
+            for (identity,) in worst:
+                # The standard signal decoder provides known-owner metadata and evidence.
+                from slopsniffer.signals.runner import _REPORT, _REPORT_ORDER, _signal_rows
+
+                found = list(
+                    _signal_rows(
+                        con,
+                        _REPORT + " AND s.signal_id=$identity " + _REPORT_ORDER,
+                        {
+                            "identity": identity,
+                            "kinds": [],
+                            "project": None,
+                            "lane": None,
+                            "since": None,
+                        },
+                    )
+                )
+                if found:
+                    members.append(enrich(con, found[0]))
+            if not members:
+                continue
+            representative = members[0]
+            explanation = representative["explanation"]
+            if shape == "idle no-op polling":
+                explanation = (
+                    f"Agent waited by polling with no-op commands {calls} times "
+                    f"across {sessions} sessions; each call is a full model turn. "
+                    "These literal commands have no side effects and their output "
+                    "is independent of external state."
+                )
+            result.append(
+                representative
+                | {
+                    "subject": shape,
+                    "severity": severity,
+                    "finding_count": count,
+                    "call_count": calls if kind in ("rerun_loop", "unchanged_retry") else None,
+                    "session_count": sessions,
+                    "affected_sessions_cost_usd": context[0] if context else None,
+                    "affected_sessions_unpriced": context[1] if context else sessions,
+                    "worst_sessions": members,
+                    "explanation": explanation,
+                    "ranking_basis": "best group per kind interleaved by maximum severity; "
+                    "affected session costs are context, not attributed waste",
+                }
+            )
+        return result
+    finally:
+        con.execute("DROP TABLE finding_subjects")

@@ -278,3 +278,37 @@ from [warpdotdev/common-skills](https://github.com/warpdotdev/common-skills)' sk
 under its MIT license, Copyright (c) 2026 Denver Technologies, Inc. The pinned source and file
 mapping are in [SOURCE.md](src/slopsniffer/grading/rubrics/SOURCE.md), with the upstream license
 beside it.
+
+## Agent skill
+
+The plain Markdown [slopsniffer skill](skills/slopsniffer/SKILL.md) guides coding
+agents through evidence-based audits, repository rollups and capped, approved
+model grading. Install it for Claude Code from this checkout:
+
+```bash
+mkdir -p ~/.claude/skills
+ln -s "$PWD/skills/slopsniffer" ~/.claude/skills/slopsniffer
+```
+
+Alternatively copy the entire `skills/slopsniffer` directory (including references)
+into `~/.claude/skills/slopsniffer`. If already installed, update that directory
+instead of nesting another copy. Codex and other agents can read `SKILL.md` and
+its linked references directly, or install the directory in their own skill path.
+The CLI must be installed separately and available as `slopsniffer`.
+
+Reports group findings with the same kind and normalized subject across sessions,
+then select one best group per kind by maximum severity before subsequent groups.
+Pure literal no-op waits share one idle-polling group. Group session costs are
+context, may overlap, and are not attributed waste. Worst affected sessions include
+open and evidence commands. Repository rollups prefer recorded repository URLs,
+then Git remote/common-directory identity, then full cwd paths; deleted worktrees
+without recorded identities retain their original paths. `worktree_count` counts
+distinct Git worktree roots (or unresolved working directories), including the main checkout.
+
+Rollups label `top_level_sessions` and `sessions_including_subagents`; the older
+`sessions` field remains an alias for top-level sessions. Status exposes the same
+counts in `session_counts`, attributing descendants to the root session's lane.
+
+After moving a data directory, ingest also repairs previously duplicated Crush
+session/totals metadata. Multiple cached exports publish one logical session from
+the newest export header; raw snapshot records remain available as evidence.

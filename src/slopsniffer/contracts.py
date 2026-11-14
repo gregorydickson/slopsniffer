@@ -127,6 +127,7 @@ class HarnessStatus(TypedDict):
 
 
 class Status(TypedDict):
+    session_counts: list[dict[str, object]]
     db_path: str
     db_size_bytes: int
     schema_version: int

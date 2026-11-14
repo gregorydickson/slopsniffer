@@ -18,11 +18,11 @@ def test_project_filter_excludes_sessions_of_other_projects(
 ) -> None:
     everything = support.run(capsys)
     assert "rerun-pos" in {s["session_id"] for s in everything["signals"]}
-    report = support.run(capsys, "--project", "other")
+    report = support.run(capsys, "--project", "/work/other")
     assert {s["session_id"] for s in report["signals"]} == {"retry-pos"}
     assert {row["key"] for dim in ("lane", "project") for row in report["rollups"][dim]} == {
         "claude",
-        "other",
+        "/work/other",
     }
 
 

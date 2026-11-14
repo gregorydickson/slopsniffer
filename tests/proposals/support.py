@@ -5,7 +5,6 @@ import hashlib
 import json
 import os
 import shutil
-import sys
 from collections.abc import Sequence
 from dataclasses import dataclass, replace
 from pathlib import Path
@@ -20,7 +19,7 @@ from slopsniffer.db import open_write
 from slopsniffer.grading import backends, grader
 from slopsniffer.grading.rubrics import load_rubrics
 from slopsniffer.ingest import skills
-from tests.helpers import REPO_ROOT
+from tests.helpers import REPO_ROOT, fake_bin
 
 FIXTURES = REPO_ROOT / "tests" / "fixtures" / "proposals"
 FAKE_GRADER = REPO_ROOT / "tests" / "grading" / "fake_grader.py"
@@ -141,14 +140,10 @@ class Fakes:
 
 
 def install_fakes(tmp_path: Path, monkeypatch: pytest.MonkeyPatch) -> Fakes:
-    monkeypatch.setattr(backends, "CALL_TIMEOUT_S", 2)
-    bin_dir = tmp_path / "fake-bin"
-    bin_dir.mkdir()
-    for name in (backends.CODEX, backends.CLAUDE):
-        shim = bin_dir / name
-        shim.write_text(f'#!/bin/sh\nexec "{sys.executable}" "{FAKE_GRADER}" {name} "$@"\n')
-        shim.chmod(0o755)
-    monkeypatch.setenv("PATH", f"{bin_dir}{os.pathsep}{os.environ['PATH']}")
+    # A hang guard only; deadline behavior is covered by test_backend_boundary.py.
+    monkeypatch.setattr(backends, "CALL_TIMEOUT_S", 30)
+    dirs = [str(fake_bin(name, FAKE_GRADER, name)) for name in (backends.CODEX, backends.CLAUDE)]
+    monkeypatch.setenv("PATH", os.pathsep.join([*dirs, os.environ["PATH"]]))
     fakes = Fakes(tmp_path / "scenario.json", tmp_path / "calls.jsonl")
     monkeypatch.setenv("FAKE_GRADER_SCENARIO", str(fakes.scenario_path))
     monkeypatch.setenv("FAKE_GRADER_LOG", str(fakes.log_path))

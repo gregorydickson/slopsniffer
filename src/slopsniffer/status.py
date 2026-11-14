@@ -63,6 +63,7 @@ def collect(
     finished = dict(con.execute(_LAST_RUNS).fetchall())
     version = con.execute("SELECT max(version) FROM schema_version").fetchone()
     return {
+        "session_counts": session_counts(con),
         "pricing_coverage": pricing.coverage(con),
         "unpriced_models": pricing.unpriced(con),
         "db_path": str(config.db_path),
@@ -78,3 +79,21 @@ def _size(path: Path) -> int:
         return path.stat().st_size
     except FileNotFoundError:
         return 0
+
+
+def session_counts(con: duckdb.DuckDBPyConnection) -> list[dict[str, object]]:
+    """Attribute descendants to their root lane, exactly as the lane rollup does."""
+    rows = con.execute("""
+WITH RECURSIVE tree AS (
+    SELECT session_id AS root, session_id, harness AS lane FROM sessions
+    WHERE parent_session_id IS NULL OR parent_session_id NOT IN (SELECT session_id FROM sessions)
+    UNION ALL
+    SELECT t.root, s.session_id, t.lane FROM tree t
+    JOIN sessions s ON s.parent_session_id=t.session_id
+)
+SELECT lane, count(DISTINCT root), count(*) FROM tree GROUP BY lane ORDER BY lane
+""").fetchall()
+    return [
+        {"lane": lane, "top_level_sessions": roots, "sessions_including_subagents": total}
+        for lane, roots, total in rows
+    ]

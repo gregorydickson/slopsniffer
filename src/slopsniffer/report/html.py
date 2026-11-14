@@ -135,7 +135,8 @@ def _section(sections: ReportSections, key: str, diffs: Mapping[str, str]) -> st
     findings = sections["top_findings"]
     if any("explanation" in row for row in findings):
         return (
-            "<p>Ranked by severity. Wasted tokens and dollars cannot be attributed "
+            "<p>Best group per kind interleaved by maximum severity, then subsequent groups "
+            "per kind. Wasted tokens and dollars cannot be attributed "
             "reliably to these events. Session costs are context, not claimed waste. "
             "Zero-severity observations are informational and excluded here. "
             "Amounts are USD list-price estimates; partial totals exclude unknown usage.</p>"
@@ -174,6 +175,9 @@ def _cell(value: object) -> str:
 
 def _finding(row: Mapping[str, object]) -> str:
     title = row.get("title") or f"{row.get('project') or 'Unknown project'} · Untitled session"
+    session_count = row.get("session_count")
+    if isinstance(session_count, int) and session_count > 1:
+        title = f"{row.get('kind')} · {row.get('subject')}"
     cost = row.get("cost_usd")
     money = (
         f"${cost:,.2f}"
@@ -191,17 +195,40 @@ def _finding(row: Mapping[str, object]) -> str:
         metadata += f" · parent: {row['parent_session_id']}"
     commands = row.get("open_commands")
     command_text = "\n".join(map(str, commands)) if isinstance(commands, list) else ""
+    worst = row.get("worst_sessions")
+    context_cost = row.get("affected_sessions_cost_usd")
+    context_money = f"${context_cost:,.2f}" if isinstance(context_cost, (int, float)) else "unknown"
+    summary = (
+        f"<p>{escape(str(row.get('finding_count')))} findings · "
+        f"{escape(str(session_count))} sessions"
+        + (
+            f" · {escape(str(row['call_count']))} calls"
+            if row.get("call_count") is not None
+            else ""
+        )
+        + f" · Affected sessions: {escape(context_money)} known cost (context, not waste); "
+        f"{escape(str(row.get('affected_sessions_unpriced')))} incompletely priced sessions.</p>"
+        if session_count is not None
+        else ""
+    )
     return (
         '<article class="finding">'
         f'<h3>{escape(str(title))}</h3><p class="meta">{escape(metadata)}</p>'
         f"<p><strong>{escape(money)}</strong> ({escape(str(row.get('cost_status')))}) · "
         f"{escape(elapsed)} · severity {escape(_severity(row.get('severity')))}</p>"
         f'<p class="explanation">{escape(str(row.get("explanation")))}</p>'
-        f"<pre>{escape(command_text)}</pre><p>Source: "
+        + summary
+        + f"<pre>{escape(command_text)}</pre><p>Source: "
         f"{escape(str(row.get('source_path') or 'unavailable'))}</p>"
         "<details><summary>Evidence and rehydrate commands</summary>"
         + _table([row])
-        + "</details></article>"
+        + "</details>"
+        + (
+            "<details><summary>Worst affected sessions</summary>" + _table(worst) + "</details>"
+            if isinstance(worst, list)
+            else ""
+        )
+        + "</article>"
     )
 
 

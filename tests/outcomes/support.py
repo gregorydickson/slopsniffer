@@ -200,10 +200,10 @@ def outcomes(capsys: pytest.CaptureFixture[str], *args: str) -> tuple[int, dict[
 
 
 def short_gh_timeout(monkeypatch: pytest.MonkeyPatch) -> None:
-    """Inject short timeouts into CLI clients; dataclass defaults are already bound."""
+    """A hang guard only; deadline tests use explicit mock clocks."""
     from functools import partial
 
     from slopsniffer import outcomes
     from slopsniffer.outcomes.github import Gh
 
-    monkeypatch.setattr(outcomes, "Gh", partial(Gh, timeout=2))
+    monkeypatch.setattr(outcomes, "Gh", partial(Gh, timeout=30))

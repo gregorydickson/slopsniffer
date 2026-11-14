@@ -9,7 +9,6 @@ plain ``run`` exercises every lane, every signal SQL and a GitHub fetch without 
 import json
 import os
 import shutil
-import sys
 from pathlib import Path
 from typing import Any
 
@@ -19,7 +18,7 @@ from jsonschema import Draft202012Validator
 from slopsniffer.cli import main
 from slopsniffer.contracts import Harness
 from slopsniffer.ingest import pickle
-from tests.helpers import CLI_SCHEMAS_DIR, load_schema, schema_registry
+from tests.helpers import CLI_SCHEMAS_DIR, fake_bin, load_schema, schema_registry
 from tests.outcomes.support import FAKE_GH, FakeGh, pr_node, short_gh_timeout, write_pr_session
 from tests.proposals.support import Fakes, install_fakes
 from tests.signals.support import FIXTURES as SIGNALS
@@ -58,11 +57,7 @@ def source_files(roots: dict[Harness, Path]) -> dict[Harness, set[str]]:
 def install_gh(tmp_path: Path, monkeypatch: pytest.MonkeyPatch) -> FakeGh:
     """A fake ``gh`` first on PATH that knows :data:`PR` as merged."""
     short_gh_timeout(monkeypatch)
-    bin_dir = tmp_path / "gh-bin"
-    bin_dir.mkdir()
-    shim = bin_dir / "gh"
-    shim.write_text(f'#!/bin/sh\nexec "{sys.executable}" "{FAKE_GH}" "$@"\n')
-    shim.chmod(0o755)
+    bin_dir = fake_bin("gh", FAKE_GH)
     monkeypatch.setenv("PATH", f"{bin_dir}{os.pathsep}{os.environ['PATH']}")
     fake = FakeGh(tmp_path / "gh-scenario.json", tmp_path / "gh-calls.jsonl")
     monkeypatch.setenv("FAKE_GH_SCENARIO", str(fake.scenario_path))

@@ -17,7 +17,7 @@ from typing import TextIO
 
 import duckdb
 
-from slopsniffer import analysis
+from slopsniffer import analysis, repositories
 from slopsniffer.config import Config
 from slopsniffer.contracts import (
     RollupDimension,
@@ -74,7 +74,8 @@ VERIFICATION_COMMAND = (
     r"|ruff\s+check)(?:\s|$)"
 )
 # Pure, literal shell output/exit builtins cannot inspect changing external state.
-NOOP_COMMAND = r"""(?i)(?:true|false|:|(?:echo|printf)(?: [a-z0-9_ ./:"'%=-]+)?)"""
+_LITERAL = r"""(?:[a-zA-Z0-9_./:=%,+\-]+|'[^']*'|"[^"$`\\]*")"""
+NOOP_COMMAND = r"(?:true|false|:|sleep [0-9]+(?:[.][0-9]+)?[smhd]?|echo(?: " + _LITERAL + r")*)"
 
 _INSERT = """
 INSERT INTO signals (signal_id, kind, session_id, severity, evidence_event_ids, details,
@@ -89,7 +90,7 @@ FROM ({select})
 # Subjects prefer a session id, then a Pickle run id, then a skill path.
 _SUBJECTS = """
 WITH subjects AS (
-    SELECT session_id AS subject, harness, project, started_at, 1 AS rank FROM sessions
+    SELECT session_id AS subject, harness, project, started_at, 1 AS rank FROM session_projects
     UNION ALL
     SELECT pickle_run_id, 'pickle', NULLIF(regexp_extract(working_dir, '([^/]+)/*$', 1), ''),
            to_timestamp(start_time_epoch), 2
@@ -270,6 +271,7 @@ def compute(
     con: duckdb.DuckDBPyConnection, config: Config, since: date | None, now: datetime
 ) -> SignalsRunSummary:
     """Replace every signal with a fresh computation and (re)create the rollup views."""
+    repositories.install(con)
     thresholds = config.signals
     values: dict[str, object] = {
         "rerun_min": thresholds.rerun_min,
@@ -397,6 +399,7 @@ def report(
     con: duckdb.DuckDBPyConnection, filters: Filters, until: datetime, *, top: int | None = None
 ) -> SignalsReport:
     """The stored signals and the rollups, both narrowed by ``filters``."""
+    repositories.install(con)
     values: dict[str, object] = {
         "kinds": list(filters.kinds),
         "project": filters.project,
@@ -469,6 +472,7 @@ def write_report(
     con: duckdb.DuckDBPyConnection, filters: Filters, until: datetime, output: TextIO
 ) -> None:
     """Stream the full signals document without retaining history-sized bodies."""
+    repositories.install(con)
     values: dict[str, object] = {
         "kinds": list(filters.kinds),
         "project": filters.project,

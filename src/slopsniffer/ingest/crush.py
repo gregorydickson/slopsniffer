@@ -258,11 +258,19 @@ def _derive(con: duckdb.DuckDBPyConnection, config: Config) -> None:
         )
         common.json_batches(con, config, _fields, bodies)
         common.insert_tools(con, config, bodies, error_default=False)
+        # A relocated cache can retain several exports of one SQLite session.
+        # The newest exported snapshot owns metadata and authoritative totals.
+        con.execute("""
+CREATE TEMP VIEW crush_latest_meta AS
+SELECT m.* FROM crush_meta m JOIN source_files f USING(source_file_id)
+QUALIFY row_number() OVER (PARTITION BY m.session_id ORDER BY
+    f.mtime_ns DESC NULLS LAST, f.source_file_id DESC, m.event_id DESC)=1
+""")
         con.execute(
             "INSERT INTO sessions (session_id,harness,parent_session_id,title,project,cwd,model,"
             "started_at,ended_at,source_file_id) SELECT session_id,'crush',parent,title,project,"
             "project,(SELECT arg_min(model,seq) FROM crush_models),started,ended,source_file_id "
-            "FROM crush_meta"
+            "FROM crush_latest_meta"
         )
         # Totals are published in the session's final transaction, after body
         # commits. There is no invented per-assistant token allocation.
@@ -270,13 +278,29 @@ def _derive(con: duckdb.DuckDBPyConnection, config: Config) -> None:
             "INSERT INTO usage (event_id,input_tokens,output_tokens,model) "
             "SELECT event_id,input_tokens,output_tokens, "
             "(SELECT CASE WHEN count(DISTINCT model)=1 THEN max(model) END FROM crush_models) "
-            "FROM crush_meta"
+            "FROM crush_latest_meta"
         )
-        con.execute("INSERT INTO session_cost SELECT session_id,cost,'cost_state' FROM crush_meta")
-        con.execute("DROP TABLE crush_meta; DROP TABLE crush_models")
+        con.execute(
+            "INSERT INTO session_cost SELECT session_id,cost,'cost_state' FROM crush_latest_meta"
+        )
+        con.execute("DROP VIEW crush_latest_meta; DROP TABLE crush_meta; DROP TABLE crush_models")
 
 
 def finalize(con: duckdb.DuckDBPyConnection, config: Config) -> None:
+    # Repair already published duplicate headers, even when every source offset
+    # is complete. The normal session transaction replaces these derived rows.
+    con.execute("""
+UPDATE events SET seq=NULL WHERE record_type='session'
+AND source_file_id IN (SELECT source_file_id FROM source_files WHERE harness='crush')
+AND session_id IN (
+    SELECT session_id FROM sessions WHERE harness='crush'
+    GROUP BY session_id HAVING count(*)>1
+    UNION
+    SELECT c.session_id FROM session_cost c
+    WHERE c.session_id IN (SELECT session_id FROM sessions WHERE harness='crush')
+    GROUP BY c.session_id HAVING count(*)>1
+)
+""")
     # Remove prior totals for pending sessions in one narrow history pass, not
     # one global usage scan per session. The replacement totals publish last.
     con.execute(common._QUEUE, [HARNESS])

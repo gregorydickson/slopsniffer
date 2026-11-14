@@ -2,7 +2,6 @@
 
 import json
 import os
-import sys
 from collections.abc import Callable, Iterator
 from dataclasses import dataclass
 from pathlib import Path
@@ -17,6 +16,7 @@ from slopsniffer.db import open_write
 from slopsniffer.grading import backends
 from slopsniffer.grading.render import render_chunks
 from slopsniffer.grading.rubrics import RUBRIC_NAMES, load_rubrics
+from tests.helpers import fake_bin
 
 FAKE_GRADER = Path(__file__).with_name("fake_grader.py")
 RUBRICS = load_rubrics()
@@ -63,14 +63,10 @@ def env(tmp_path: Path, monkeypatch: pytest.MonkeyPatch, capsys: pytest.CaptureF
     config = tmp_path / "config.toml"
     config.write_text("[grading]\nchunk_tokens = 60\nchunk_overlap = 10\n")
     monkeypatch.setenv("SLOPSNIFFER_CONFIG", str(config))
-    monkeypatch.setattr(backends, "CALL_TIMEOUT_S", 2)
-    bin_dir = tmp_path / "fake-bin"
-    bin_dir.mkdir()
-    for name in (backends.CODEX, backends.CLAUDE):
-        shim = bin_dir / name
-        shim.write_text(f'#!/bin/sh\nexec "{sys.executable}" "{FAKE_GRADER}" {name} "$@"\n')
-        shim.chmod(0o755)
-    monkeypatch.setenv("PATH", f"{bin_dir}{os.pathsep}{os.environ['PATH']}")
+    # A hang guard only; deadline behavior is covered by test_backend_boundary.py.
+    monkeypatch.setattr(backends, "CALL_TIMEOUT_S", 30)
+    dirs = [str(fake_bin(name, FAKE_GRADER, name)) for name in (backends.CODEX, backends.CLAUDE)]
+    monkeypatch.setenv("PATH", os.pathsep.join([*dirs, os.environ["PATH"]]))
     fake = Env(tmp_path / "scenario.json", tmp_path / "calls.jsonl", capsys)
     monkeypatch.setenv("FAKE_GRADER_SCENARIO", str(fake.scenario_path))
     monkeypatch.setenv("FAKE_GRADER_LOG", str(fake.log_path))

@@ -16,7 +16,7 @@ SELECT session_id, seq, result_seq, call_id, use_event_id, result_event_id, tool
                CASE json_type(shell)
                    WHEN 'ARRAY' THEN array_to_string(CAST(shell AS VARCHAR[]), ' ')
                    ELSE json_extract_string(shell, '$')
-               END, '\s+', ' ', 'g')), '')
+               END, '[ \t]+', ' ', 'g')), '')
        END AS command,
        CASE WHEN tool_name IN ('Edit', 'MultiEdit', 'Write', 'NotebookEdit', 'Create',
                                 'edit', 'multiedit', 'write', 'lsp_replace_symbol') THEN

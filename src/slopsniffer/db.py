@@ -14,6 +14,7 @@ from pathlib import Path
 
 import duckdb
 
+from slopsniffer import repositories
 from slopsniffer.config import Config
 from slopsniffer.errors import DatabaseLocked, SchemaVersionMismatch
 
@@ -93,6 +94,7 @@ def apply_schema(con: duckdb.DuckDBPyConnection) -> None:
     except BaseException:
         con.execute("ROLLBACK")
         raise
+    repositories.install(con)
 
 
 def _upgrade(con: duckdb.DuckDBPyConnection, found: int, ddl: str) -> None:
@@ -140,6 +142,7 @@ def open_read(config: Config) -> Iterator[duckdb.DuckDBPyConnection]:
         raise
     try:
         _configure(con, config)
+        repositories.install(con)
         yield con
     finally:
         con.close()

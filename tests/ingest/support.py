@@ -9,13 +9,13 @@ from dataclasses import replace
 from pathlib import Path
 from typing import Any, cast
 
-import duckdb
 import pytest
 from jsonschema import Draft202012Validator
 
 from slopsniffer.cli import main
 from slopsniffer.config import load_config
 from slopsniffer.contracts import Harness, HarnessIngest
+from slopsniffer.db import open_read
 from slopsniffer.ingest import engine, passthrough
 from slopsniffer.ingest.reader import Parser, event_id
 from tests.helpers import CLI_SCHEMAS_DIR, REPO_ROOT, load_schema, schema_registry
@@ -81,12 +81,11 @@ def _base_env() -> dict[str, str]:
 
 
 def query(sql: str, params: list[Any] | None = None, data_dir: Path | None = None) -> list[Any]:
-    db = (data_dir or load_config().data_dir) / "telemetry.duckdb"
-    con = duckdb.connect(str(db), read_only=True)
-    try:
+    config = load_config()
+    if data_dir is not None:
+        config = replace(config, data_dir=data_dir)
+    with open_read(config) as con:
         return con.execute(sql, params or []).fetchall()
-    finally:
-        con.close()
 
 
 def event_pairs(data_dir: Path | None = None) -> list[tuple[str, int]]:

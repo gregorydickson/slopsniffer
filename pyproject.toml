@@ -1,6 +1,6 @@
 [project]
 name = "slopsniffer"
-version = "0.1.0"
+version = "0.2.0"
 description = "Local, lossless digest of agent transcripts into DuckDB with waste signals, outcomes, grading and proposals."
 readme = "README.md"
 authors = [

@@ -7,7 +7,7 @@ from typing import get_type_hints
 
 import duckdb
 
-from slopsniffer import pricing, signals
+from slopsniffer import pricing, repositories, signals
 from slopsniffer.config import Config, load_config
 from slopsniffer.contracts import (
     Proposal,
@@ -19,7 +19,7 @@ from slopsniffer.contracts import (
 )
 from slopsniffer.contracts import Rubric as RubricName
 from slopsniffer.grading.rubrics import Rubric
-from slopsniffer.report.findings import ranked
+from slopsniffer.report.findings import grouped
 from slopsniffer.report.paths import display_report
 
 SECTIONS: tuple[str, ...] = tuple(get_type_hints(ReportSections))
@@ -48,10 +48,11 @@ def build(
     now: datetime,
     config: Config | None = None,
 ) -> Report:
+    repositories.install(con)
     pricing.install(con, config or load_config())
-    found, rollups = _signals(con, now)
+    _found, rollups = _signals(con, now)
     sections: ReportSections = {
-        "top_findings": ranked(con, _top(found)),
+        "top_findings": grouped(con, TOP_FINDINGS),
         "pricing_coverage": pricing.coverage(con),
         "unpriced_models": pricing.unpriced(con),
         "rollups": rollups,

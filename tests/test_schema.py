@@ -106,7 +106,12 @@ def config() -> Config:
 
 
 def tables(con: duckdb.DuckDBPyConnection) -> set[str]:
-    return {row[0] for row in con.execute("SELECT table_name FROM duckdb_tables()").fetchall()}
+    return {
+        row[0]
+        for row in con.execute(
+            "SELECT table_name FROM duckdb_tables() WHERE NOT temporary"
+        ).fetchall()
+    }
 
 
 def columns(con: duckdb.DuckDBPyConnection, table: str) -> set[str]:

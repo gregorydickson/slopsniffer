@@ -965,3 +965,38 @@ input to `lane_pending_events`. Failures/restarts repeat cleanup and derivation.
 The mutation can broaden the physical scan; equivalent resource consumption is
 not claimed. The shipped code retains the bounded staging-table input, and the
 existing small-memory finalization regressions remain in the full suite.
+
+## v0.2 skill and report usefulness
+
+The serial targeted campaign killed **43/43 production mutations**, with no
+survivors, invalid variants or timeouts. Its unmutated v0.2 and cache-relocation baseline passed 47
+contracts. Each case cleared the affected Python bytecode cache, disabled bytecode
+writes for its child test process, restored its source in `finally`, and verified
+the original SHA-256. This is targeted hand mutation of the changed functions and
+SQL, not an exhaustive generated mutmut run. Logs and the runner remain outside
+the published tree.
+
+| Changed boundary | Mutated behavior killed by contracts |
+| --- | --- |
+| `repositories.normalize`, `from_path` | Preserve `.git` suffix; discard remote identity; confuse common directory with worktree root. Synthetic SSH/HTTPS/scp URLs and real temporary Git worktrees distinguish these cases, including a subdirectory negative. |
+| `repositories.install` | Stop path paging early; remove byte budget; increase row budget; advance past unconsumed metadata; reverse recorded/filesystem precedence; retain old raw-project rollup definitions. Complete identity membership, observed physical body requests and unchanged v4 database bytes cover the derivation. |
+| `findings.subject` | Disable no-op grouping; discard the full long-command digest. Literal arguments, expansion/redirection negatives and same-prefix distinct long commands discriminate the normalized subjects. |
+| `findings.grouped` | Admit informational rows; partition groups by session; remove kind interleaving; double-count session cost; return only one worst session; omit spool cleanup. Contracts include multiple epochs in one session, multiple sessions, competing groups, an informational negative and an unknown owner. |
+| `report.build` | Disconnect grouped findings; omit repository refresh before a report without stored rollups. The public document and newly recorded metadata must retain the expected identities. |
+| `status.collect`, `session_counts` | Omit the counts; count descendants as roots. Root, child, grandchild, cross-harness child and missing-parent cases must match both labelled rollup denominators. |
+| `rollups.sql` | Replace root counts with tree totals; replace tree totals with root counts; count repeated working directories instead of distinct worktree roots. |
+| `signals.compute`, `report`, `write_report` | Omit each entry point's repository refresh. Each is exercised after metadata arrives on an already open connection. |
+| `db.apply_schema`, `open_read` | Omit initialization of the derived reader relations. Read-only v4 and current CLI consumers must still resolve projects. |
+| CLI `_run_args`, `_run` | Remove the call-cap flag; discard the approved cap before grading. Parser examples and the fake grading boundary require the cap to arrive unchanged. |
+| HTML `_finding` | Omit visible aggregate context. The rendered report must expose session/call counts and known affected-session cost, with navigation for the worst sessions. |
+| Crush `_derive` | Prefer an older or higher-cost snapshot; publish sessions, usage or costs from all cached headers; omit latest-header view cleanup. Opposite registration/mtime order and decreasing totals require true snapshot recency. |
+| Crush `finalize` | Omit session-only or cost-only duplicate repair. Completed v4 offsets must rederive exactly one logical actor and one authoritative total, while retaining raw JSON/identities and doing no work on the next clean replay. |
+| `prelude.sql` | Erase newline command boundaries during normalization, turning an echo followed by a real command into an apparent literal no-op. |
+| `rerun_loop.sql` | Restore the exclusion of numeric sleep; remove the idle-polling interpretation. Actual SQL signals distinguish literal waits from variable expansion, output redirection and real state-reading commands. |
+
+The `_section` ranking prose and CSS-independent display wording are presentation
+changes; changing a synonym without changing the selection policy is exempt.
+The actual policy is checked by group membership/order and zero-severity negatives.
+The fake backend fixture's startup allowance is test infrastructure only; timeout
+classification still has deterministic backend-boundary coverage. No production
+model timeout or DuckDB resource limit was raised.

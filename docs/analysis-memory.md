@@ -156,3 +156,40 @@ autocheckpoint floor at 64MB. The regression uses many smaller atomic records to
 test history growth below that storage floor. No checkpoint tuning or higher
 limit is used to hide it. Explicit ad hoc SQL and full-result library APIs retain
 the caller/output-sized limits described above.
+
+## Repository identities and grouped reports (v0.2)
+
+Repository identity is derived on every reader connection, including read-only SQL,
+with no persisted schema change. `repository_paths` pages distinct cwd strings;
+Git reads only local common-directory, worktree-root and remote metadata. The
+`repository_metadata` spool decodes only physical session-meta records under the
+shared row and byte caps, one body at a time. Inherited records with no own
+sequence cannot supply an identity. `session_projects` joins these narrow maps,
+preferring recorded URLs to resolved filesystem identity, then full original paths.
+Both maps live only for the connection; they are deliberate reader infrastructure,
+not leaked analysis staging. Existing v4 rollups are shadowed by current temporary
+views/macros so every reader applies the same fallback and counting policy.
+
+Grouped reports page signal identities, fetch one details body by physical position,
+and spool bounded scalar kind/subject/session/severity/call facts. Long subjects
+retain a short display prefix plus a full SHA-256 identity. SQL groups and ranks
+these scalars, choosing one group per kind per round. Only the selected groups'
+five worst distinct sessions have their evidence and navigation metadata loaded.
+Costs are summed after deduplicating affected sessions within each group, with
+incomplete pricing counted separately. No history-sized evidence list or Python
+set of all sessions is retained. The HTML includes the same bounded worst-session
+list. Rollup worktree counts and the two session denominators are scalar aggregates.
+
+Synthetic v0.2 contracts run at a 32 MB pool, observe both row and byte boundaries,
+and compare complete identity membership. The v4 read-only regression compares
+database bytes before and after reporting, including a stored older rollup macro.
+
+Crush cache relocation can leave multiple raw export headers for one logical
+session. Publication now selects one complete header by captured export mtime,
+then source-file and event identity, before inserting session, authoritative cost
+and usage totals. The window carries only one session's scalar metadata, never
+message/tool bodies. Ingest detects duplicate derived session/cost identities in
+narrow global aggregates and marks their header events pending for the existing
+bounded finalizer. Already completed v4 offsets therefore repair on the next
+ingest; raw event identities and JSON stay intact. Synthetic relocation,
+newest-snapshot and session-only/cost-only repair cases run with a 32 MB pool.

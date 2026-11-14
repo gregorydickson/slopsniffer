@@ -152,6 +152,7 @@ def _rehydrate_args(p: argparse.ArgumentParser) -> None:
 
 def _run_args(p: argparse.ArgumentParser) -> None:
     p.add_argument("--grade", action="store_true", help="also grade the worst sessions")
+    p.add_argument("--max-calls", type=_positive_int, metavar="M")
     p.add_argument("--worst", type=_positive_int, metavar="N")
 
 
@@ -254,6 +255,8 @@ def _run(args: argparse.Namespace, ctx: Context) -> int:
     """ingest, signals, outcomes, then grade when asked; each step is logged as its own
     command run and the exit code is the worst step's."""
     assert ctx.con is not None
+    if args.max_calls is not None and not args.grade:
+        raise UsageError("run: --max-calls requires --grade")
     if args.grade != (args.worst is not None):
         raise UsageError("run: --grade and --worst N go together")
     con, config = ctx.con, ctx.config
@@ -282,7 +285,9 @@ def _run(args: argparse.Namespace, ctx: Context) -> int:
         "outcomes": step("outcomes", outcomes_step),
     }
     if args.grade:
-        summary["grade"] = step("grade", lambda: _grade_step(con, config, args.worst))
+        summary["grade"] = step(
+            "grade", lambda: _grade_step(con, config, args.worst, max_calls=args.max_calls)
+        )
     ctx.emit(summary)
     return max(codes)
 

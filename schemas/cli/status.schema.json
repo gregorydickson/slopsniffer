@@ -10,7 +10,8 @@
     "harnesses",
     "last_runs",
     "pricing_coverage",
-    "unpriced_models"
+    "unpriced_models",
+    "session_counts"
   ],
   "properties": {
     "db_path": {
@@ -80,6 +81,12 @@
       }
     },
     "unpriced_models": {
+      "type": "array",
+      "items": {
+        "type": "object"
+      }
+    },
+    "session_counts": {
       "type": "array",
       "items": {
         "type": "object"

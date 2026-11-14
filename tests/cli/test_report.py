@@ -10,7 +10,7 @@ from typing import Any
 import pytest
 
 from slopsniffer.cli import main
-from slopsniffer.report import SECTIONS, TOP_FINDINGS
+from slopsniffer.report import SECTIONS
 from tests.cli.support import cli, fixture_home, install_gh, install_graders, validate
 from tests.ingest.support import jsonl, query
 from tests.proposals.support import RUBRICS, Grade, Session, failing, real_home, seed
@@ -128,9 +128,12 @@ def test_sections_carry_the_stored_signals_grades_and_proposals(
         "SELECT signal_id FROM signals WHERE severity > 0 ORDER BY severity DESC, signal_id"
     )
     assert ranked
-    assert [s["signal_id"] for s in sections["top_findings"]] == [
-        sid for (sid,) in ranked[:TOP_FINDINGS]
-    ]
+    actual = sections["top_findings"]
+    assert {s["kind"] for s in actual} == {
+        kind for (kind,) in query("SELECT DISTINCT kind FROM signals WHERE severity > 0")
+    }
+    assert {s["signal_id"] for s in actual} <= {sid for (sid,) in ranked}
+    assert all(s["worst_sessions"] for s in actual)
     by_kind: dict[str, list[tuple[str, float]]] = {}
     for kind, session, severity in query("SELECT kind, session_id, severity FROM signals"):
         by_kind.setdefault(kind, []).append((session, severity))

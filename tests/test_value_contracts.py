@@ -226,7 +226,14 @@ def test_finding_navigation_explanation_and_collapsed_escaped_evidence(
             "INSERT INTO signals VALUES ('info', 'context_overflow', 's', 0, [], '{}', now())"
         )
         document = report.build(con, load_rubrics(), datetime(2026, 11, 12, tzinfo=UTC))
-        assert document["sections"]["top_findings"] == [finding]
+        [group] = document["sections"]["top_findings"]
+        assert {k: group[k] for k in finding if k != "ranking_basis"} == {
+            k: v for k, v in finding.items() if k != "ranking_basis"
+        }
+        assert group["worst_sessions"] == [finding]
+        assert group["session_count"] == len({signal["session_id"]})
+        assert group["affected_sessions_cost_usd"] == 12.5
+        assert group["affected_sessions_unpriced"] == len({signal["session_id"]})
         page = html.render(document, {})
         assert "<details>" in page and "<details open" not in page
         assert "<session-title>" not in page and "&lt;session-title&gt;" in page

@@ -249,7 +249,11 @@ def test_session_batches_preserve_boundaries_and_cleanup(tmp_path: Path, budget:
             found = list(batches)
         assert found == [[sid] for sid in sizes]
         assert (
-            con.execute("SELECT table_name FROM duckdb_tables() WHERE temporary").fetchall() == []
+            con.execute(
+                "SELECT table_name FROM duckdb_tables() WHERE temporary "
+                "AND table_name NOT IN ('repository_paths','repository_metadata')"
+            ).fetchall()
+            == []
         )
 
 
@@ -321,7 +325,8 @@ def test_later_signal_failure_preserves_published_rows(
         assert signal_rows(con) == expected
         assert (
             con.execute(
-                "SELECT table_name FROM duckdb_tables() WHERE temporary "
+                "SELECT table_name FROM duckdb_tables() WHERE "
+                "(temporary AND table_name NOT IN ('repository_paths','repository_metadata')) "
                 "OR table_name LIKE 'analysis_%'"
             ).fetchall()
             == []
@@ -373,7 +378,11 @@ def test_shared_scope_contains_only_selected_narrow_events(tmp_path: Path) -> No
                 "byte_offset",
             }
         assert (
-            con.execute("SELECT table_name FROM duckdb_tables() WHERE temporary").fetchall() == []
+            con.execute(
+                "SELECT table_name FROM duckdb_tables() WHERE temporary "
+                "AND table_name NOT IN ('repository_paths','repository_metadata')"
+            ).fetchall()
+            == []
         )
 
 

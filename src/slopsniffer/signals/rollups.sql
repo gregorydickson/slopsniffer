@@ -33,7 +33,7 @@ SELECT r.session_id, r.harness AS lane, r.project, r.started_at,
                               OR c.cost_usd IS NULL) AS unpriced_sessions,
        epoch(max(m.ended_at)) - epoch(min(m.started_at)) AS wall_seconds
 FROM session_tree t
-JOIN sessions r ON r.session_id = t.root_session_id
+JOIN session_projects r ON r.session_id = t.root_session_id
 JOIN sessions m ON m.session_id = t.session_id
 LEFT JOIN session_tokens k ON k.session_id = t.session_id
 LEFT JOIN session_cost c ON c.session_id = t.session_id
@@ -68,8 +68,14 @@ WITH members AS (
            sum(cost_usd) AS total_cost_usd,
            count(*) FILTER (WHERE unpriced_sessions > 0) AS unpriced_sessions,
            CASE WHEN sum(unpriced_sessions) > 0 THEN 'partial' ELSE 'complete' END AS cost_status,
-           sum(wall_seconds) AS wall_seconds
+           sum(wall_seconds) AS wall_seconds,
+           count(*) AS top_level_sessions,
+           sum(tree_sessions) AS sessions_including_subagents
     FROM members GROUP BY key
+), worktrees AS (
+    SELECT m.key, count(DISTINCT s.worktree) AS worktree_count
+    FROM members m JOIN session_tree t ON t.root_session_id=m.session_id
+    JOIN session_projects s ON s.session_id=t.session_id GROUP BY m.key
 ), kinds AS (
     SELECT key, json_group_object(kind, signals) AS signal_counts
     FROM (SELECT m.key, c.kind, sum(c.signals) AS signals
@@ -77,8 +83,9 @@ WITH members AS (
           GROUP BY m.key, c.kind)
     GROUP BY key
 )
-SELECT t.*, coalesce(k.signal_counts, '{}'::JSON) AS signal_counts
-FROM totals t LEFT JOIN kinds k ON k.key IS NOT DISTINCT FROM t.key
+SELECT t.*, w.worktree_count, coalesce(k.signal_counts, '{}'::JSON) AS signal_counts
+FROM totals t LEFT JOIN worktrees w ON w.key IS NOT DISTINCT FROM t.key
+LEFT JOIN kinds k ON k.key IS NOT DISTINCT FROM t.key
 ORDER BY t.key NULLS LAST;
 
 CREATE OR REPLACE VIEW rollup_by_lane AS

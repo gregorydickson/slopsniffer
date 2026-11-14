@@ -285,4 +285,4 @@ def test_a_failing_grade_step_sets_the_run_exit(
     matches("run", doc)
     assert doc["grade"]["chunks_errored"]
     exits = dict(query("SELECT command, exit_code FROM command_runs"))
-    assert exits == {"ingest": 0, "signals": 0, "outcomes": 0, "grade": 3, "run": 3}
+    assert exits == {"ingest": 0, "signals": 0, "outcomes": 0, "grade": 3, "run": 3}, doc

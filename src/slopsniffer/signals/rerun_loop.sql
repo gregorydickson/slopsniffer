@@ -13,8 +13,8 @@ SELECT session_id, command, count(*) AS runs,
 FROM epochs
 WHERE command IS NOT NULL AND result_hash IS NOT NULL
   -- Polling reads externally changing state; it is not a deterministic retry.
-  AND NOT regexp_matches(command,
-      '(?i)\b(sleep|ps|tail|watch|wait|kill -0)\b|\b(gh|gt) .*(checks|status)|status.*--json|wake[.]sh|[.]log\b|droid-bg-|/tasks/|/jobs/')
+  AND (regexp_full_match(command, $noop_command) OR NOT regexp_matches(command,
+      '(?i)\b(sleep|ps|tail|watch|wait|kill -0)\b|\b(gh|gt) .*(checks|status)|status.*--json|wake[.]sh|[.]log\b|droid-bg-|/tasks/|/jobs/'))
 GROUP BY session_id, edits_before, command, result_hash
 HAVING count(*) >= $rerun_min
 )
@@ -27,6 +27,7 @@ SELECT session_id,
             THEN runs / $rerun_min ELSE 0.0 END AS severity,
        evidence_event_ids,
        json_object('command', command, 'runs', runs, 'interpretation',
-                   CASE WHEN severity > 0 THEN 'actionable_repetition'
+                   CASE WHEN severity > 0 THEN CASE WHEN regexp_full_match(command, $noop_command)
+                             THEN 'idle_noop_polling' ELSE 'actionable_repetition' END
                         ELSE 'repetition_not_proven_waste' END) AS details
 FROM repeated
